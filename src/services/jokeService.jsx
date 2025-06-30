@@ -1,5 +1,7 @@
+const apiUrl = "http://localhost:8088/jokes"
+
 export const inputJoke = (jokeObj) => {
-    fetch("http://localhost:8088/jokes", {
+    return fetch(apiUrl, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -9,5 +11,21 @@ export const inputJoke = (jokeObj) => {
 }
 
 export const getAllJokes = () => {
-    return fetch("http://localhost:8088/jokes").then(res => res.json())
+    return fetch(apiUrl).then(res => res.json())
+}
+
+export const updateJoke = (joke) => {
+    return fetch(`${apiUrl}/${joke.id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(joke)
+    })
+}
+
+export const deleteJoke = (id) => {
+    return fetch(`${apiUrl}/${id}`, {
+        method: "DELETE"
+    })
 }

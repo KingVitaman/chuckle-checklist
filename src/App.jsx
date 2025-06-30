@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getAllJokes, inputJoke } from "./services/jokeService"
+import { getAllJokes, inputJoke, updateJoke, deleteJoke } from "./services/jokeService"
 import stevePic from "./assets/steve.png"
 import "./App.css"
 
@@ -10,11 +10,7 @@ export const App = () => {
   const [untoldJokesList, setUntoldJokesList] = useState([])
   const [toldJokesList, setToldJokesList] = useState([])
 
-  useEffect(() => {
-    setHasBeenTold(false)
-  }, [])
-
-  useEffect(() => {
+   useEffect(() => {
     getAllJokes().then((jokesArray) => {
       setAllJokes(jokesArray)
     })
@@ -57,43 +53,72 @@ export const App = () => {
       </div>
 
       <div className="joke-lists-container">
+
         <section className="joke-list-container">
           <h2>
             Untold Jokes
-            <span className="untold-count">{untoldJokesList.length}</span>
+            <div className="untold-count">{untoldJokesList.length}</div>
           </h2>
           <div>
             {untoldJokesList.map(joke => (
               <div className="joke-list-item" key={joke.id}>
                 <div className="joke-list-item-text">{joke.text}</div>
+                <div className="joke-list-action-toggle">
+                  <button
+                    onClick={() => {
+                      updateJoke({ ...joke, told: true })
+                        .then(() => getAllJokes())
+                        .then(setAllJokes)
+                    }}
+                  >
+                    <i className="fa-regular fa-laugh"></i>
+                  </button>
+                  <div className="joke-list-action-delete">
+                  <button onClick={() => deleteJoke(joke.id).then(() => getAllJokes())
+                        .then(setAllJokes)}>
+                      <i className="fa-regular fa-trash-can"></i>
+                    </button>
+                  </div>
+
+                </div>
               </div>
             ))}
           </div>
         </section>
+
         <section className="joke-list-container">
           <h2>
             Told Jokes
-            <span className="told-count">{toldJokesList.length}</span>
+            <div className="told-count">{toldJokesList.length}</div>
           </h2>
           <div>
             {toldJokesList.map(joke => (
               <div className="joke-list-item" key={joke.id}>
                 <div className="joke-list-item-text">{joke.text}</div>
+                <div className="joke-list-action-toggle">
+                  <button
+                    onClick={() => {
+                      updateJoke({ ...joke, told: false })
+                        .then(() => getAllJokes())
+                        .then(setAllJokes)
+                    }}
+                  >
+                    <i className="fa-regular fa-frown"></i>
+                  </button>
+                  <div className="joke-list-action-delete">
+                    <button onClick={() => deleteJoke(joke.id).then(() => getAllJokes())
+                      .then(setAllJokes)}>
+                      <i className="fa-regular fa-trash-can"></i>
+                    </button>
+                  </div>
+
+                </div>
               </div>
             ))}
           </div>
         </section>
+
       </div>
     </div>
   )
 }
-
-  // <article className="joke-lists-container">
-    //     {allJokes.map((joke) => {
-    //       return (
-    //         <section className="joke-list-container" key={joke.id}>
-    //           <header className="joke-list-item-text">#{joke.id}: {joke.text}</header>
-    //         </section>
-    //       );
-    //     })}
-    //   </article>
